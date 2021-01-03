@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,7 +17,13 @@ public class Main {
 
     public static void main(String []args) {
         try {
-            Club []clubs = new Gson().fromJson(Main.readFile(new File("files/clubs/datasetS.json")), Club[].class);
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("HH:mm")
+                    .create();
+
+            Club []clubs = gson.fromJson(Main.readFile(new File("files/clubs/datasetS.json")), Club[].class);
+
+            Race []races = gson.fromJson(Main.readFile(new File("files/races/datasetS.json")), Race[].class);
             System.out.println();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
