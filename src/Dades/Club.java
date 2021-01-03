@@ -1,3 +1,5 @@
+package Dades;
+
 import java.util.Arrays;
 
 public class Club {
@@ -9,7 +11,7 @@ public class Club {
     /* OVERRIDED FUNCTIONS */
     @Override
     public String toString() {
-        return "Club{" +
+        return "Dades.Club{" +
                 "name='" + name + '\'' +
                 ", nation='" + nation + '\'' +
                 ", date=" + date +

@@ -1,3 +1,5 @@
+package Dades;
+
 public class Atletes {
     private String name;
     private String lastname;
@@ -10,7 +12,7 @@ public class Atletes {
     /* OVERRIDED FUNCTIONS */
     @Override
     public String toString() {
-        return "Atletes{" +
+        return "Dades.Atletes{" +
                 "name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", age=" + age +
