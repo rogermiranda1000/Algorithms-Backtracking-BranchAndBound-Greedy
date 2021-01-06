@@ -1,3 +1,4 @@
+import Algorithms.Curses;
 import Dades.Club;
 import Dades.Race;
 
@@ -9,7 +10,9 @@ public class Main {
         try {
             Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
             Race []races = FileController.loadFile("files/races/datasetS.json", Race[].class);
-            System.out.println();
+            Curses c = new Curses(10, 5000);
+            c.run();
+            System.out.println("[*] " + c.getBest());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
