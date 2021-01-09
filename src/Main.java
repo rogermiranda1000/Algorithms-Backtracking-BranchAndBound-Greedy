@@ -1,5 +1,6 @@
 import Algorithms.Curses;
 import Algorithms.Horaris;
+import Algorithms.CursesRelleus;
 import Dades.Club;
 import Dades.Race;
 
@@ -18,12 +19,21 @@ public class Main {
             races = h.getSorted();
             System.out.println("Es poden organitzar " + races.length + " carreres.");
             System.out.println(Arrays.toString(races));
+
+            CursesRelleus cR = new CursesRelleus(clubs);
+            cR.buscarMillorSolucio(clubs);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        Curses c = new Curses(10, 5000);
-        c.run();
-        System.out.println("[*] " + c.getBest());
+        //Curses c = new Curses(10, 5000);
+        //c.run();
+        //System.out.println("[*] " + c.getBest());
+
+
+
+
     }
+
 }

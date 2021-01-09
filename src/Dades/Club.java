@@ -18,4 +18,8 @@ public class Club {
                 ", at[" + Arrays.toString(at) +
                 '}';
     }
+
+    public Atletes[] getAtletes(){
+        return this.at;
+    }
 }

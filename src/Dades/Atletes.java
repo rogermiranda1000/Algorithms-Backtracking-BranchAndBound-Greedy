@@ -22,4 +22,10 @@ public class Atletes {
                 ", type='" + type + '\'' +
                 '}';
     }
+
+    public String getName(){ return this.name; }
+    public String getType(){ return this.type; }
+    public float getVelocitatMitjana(){ return (this.distance/this.time); }
+    public float getTime(){ return this.time; }
+    public float getDistance(){ return this.distance; }
 }
