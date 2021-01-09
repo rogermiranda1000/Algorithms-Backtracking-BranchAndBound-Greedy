@@ -4,8 +4,9 @@ import Dades.Atletes;
 import Dades.Club;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class CursesRelleus {
+public class CursesRelleus implements Runnable {
     private Club[] clubs;
 
 
@@ -37,27 +38,26 @@ public class CursesRelleus {
             tipus[1] = 0;
             tipus[2] = 0;
             for (int i = 0; i < 3; i++) {
-                if (a[j][i].getType() == "Trail Runner") tipus[0]++;
-                if (a[j][i].getType() == "Long distance Runner,") tipus[1]++;
-                if (a[j][i].getType() == "Sprinter") tipus[2]++;
+                if (a[j][i].getType().equalsIgnoreCase("Trail Runner")) tipus[0]++;
+                if (a[j][i].getType().equalsIgnoreCase("Long distance Runner,")) tipus[1]++;
+                if (a[j][i].getType().equalsIgnoreCase("Sprinter")) tipus[2]++;
             }
             if (tipus[0] != 1 || tipus[1] != 1 || tipus[2] != 1) return false;
         }
         return true;
     }
 
-    public void buscarMillorSolucio(Club[] c){
+    public void run(){
         ArrayList<Atletes> atletes = new ArrayList<>();
         Atletes[][] configuracions = new Atletes[countNumEquips()][3];
 
-        for(int i=0; i < c.length; i++){
-            for(int j=0; j < c[i].getAtletes().length; j++){
-                atletes.add(c[i].getAtletes()[j]);
-            }
+        for (int i=0; i < this.clubs.length; i++) {
+            atletes.addAll(Arrays.asList(this.clubs[i].getAtletes()));
         }
-        ArrayList<Atletes> aux= new ArrayList<>();
+        ArrayList<Atletes> aux = new ArrayList<>();
 
-        System.out.println(combinations(atletes, aux, 0).toString());
+        // TODO: guardar a variable
+        combinations(atletes, aux, 0);
     }
 
     public void backTraking(ArrayList<Atletes> a, Atletes[][] conf){
