@@ -21,7 +21,7 @@ public class Main {
             System.out.println(Arrays.toString(races));
 
             CursesRelleus cR = new CursesRelleus(clubs);
-            cR.buscarMillorSolucio(clubs);
+            cR.run();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
