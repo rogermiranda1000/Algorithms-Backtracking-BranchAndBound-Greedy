@@ -20,6 +20,8 @@ public class Main {
             System.out.println("Es poden organitzar " + races.length + " carreres.");
             System.out.println(Arrays.toString(races));
 
+
+
             CursesRelleus cR = new CursesRelleus(clubs);
             cR.run();
 
