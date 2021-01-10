@@ -12,12 +12,10 @@ public class CursesRelleus implements Runnable {
     private int[] binario;
     private ArrayList<ArrayList<Atletes>> teams;
 
-
-
     public CursesRelleus(ArrayList<Atletes> atletes){
         this.atletes = atletes;
     }
-/**
+/*
     public int countNumEquips(){
         int result=0;
         for(int i=0; i < clubs.length; i++){
@@ -34,7 +32,7 @@ public class CursesRelleus implements Runnable {
         }
         return (result/3);
     }
- **/
+ */
     boolean tipusCorrectes(ArrayList<Atletes> a){
         int[] tipus = {0, 0, 0};
         for(int j=0; j < a.size(); j++) {
@@ -50,6 +48,8 @@ public class CursesRelleus implements Runnable {
         }
         return true;
     }
+
+
 
     public void run() {
         /*
