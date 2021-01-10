@@ -11,8 +11,8 @@ public class Main {
 
     public static void main(String []args) {
         try {
-            Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
-            Race []races = FileController.loadFile("files/races/datasetS.json", Race[].class);
+            Club []clubs = FileController.loadFile("files/clubs/datasetXS.json", Club[].class);
+            Race []races = FileController.loadFile("files/races/datasetXS.json", Race[].class);
 
             Horaris h = new Horaris(races);
             h.run();
@@ -22,7 +22,7 @@ public class Main {
 
 
 
-            CursesRelleus cR = new CursesRelleus(clubs);
+            CursesRelleus cR = new CursesRelleus(Club.getAllAtletes(clubs));
             cR.run();
 
         } catch (FileNotFoundException e) {

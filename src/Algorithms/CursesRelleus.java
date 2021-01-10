@@ -8,16 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CursesRelleus implements Runnable {
-    //private Club[] clubs;
-    private Club[] clubs;
+    private ArrayList<Atletes> atletes;
     private int[] binario;
     private ArrayList<ArrayList<Atletes>> teams;
-    private ArrayList<Atletes> atletes;
 
 
 
-    public CursesRelleus(Club[] clubs){
-        this.clubs = clubs;
+    public CursesRelleus(ArrayList<Atletes> atletes){
+        this.atletes = atletes;
     }
 /**
     public int countNumEquips(){
@@ -54,7 +52,7 @@ public class CursesRelleus implements Runnable {
     }
 
     public void run() {
-        /**
+        /*
         ArrayList<Atletes> Sprinter = new ArrayList<>();
         ArrayList<Atletes> LD = new ArrayList<>();
         ArrayList<Atletes> TR = new ArrayList<>();
@@ -69,21 +67,16 @@ public class CursesRelleus implements Runnable {
                     Sprinter.add(clubs[i].getAtletes()[j]);
             }
         }
-         **/
+         */
 
 
 
 
 
 
-        teams = new ArrayList<>();
-        atletes = new ArrayList<>();
-        for (int i=0; i < this.clubs.length; i++) {
-            atletes.addAll(Arrays.asList(this.clubs[i].getAtletes()));
-            //atletes.addAll(Arrays.asList(this.clubs.getAtletes()));
-        }
-        init(atletes);
-        generateAllBinary(atletes.size(), 0);
+        this.teams = new ArrayList<>();
+        init(this.atletes);
+        generateAllBinary(this.atletes.size(), 0);
         //calculateBin(0);
 
 
