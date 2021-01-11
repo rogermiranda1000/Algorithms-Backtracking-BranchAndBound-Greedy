@@ -33,20 +33,15 @@ public class CursesRelleus implements Runnable {
         return (result/3);
     }
  */
-    boolean tipusCorrectes(ArrayList<Atletes> a){
-        int[] tipus = {0, 0, 0};
-        for(int j=0; j < a.size(); j++) {
-            tipus[0] = 0;
-            tipus[1] = 0;
-            tipus[2] = 0;
-            for (int i = 0; i < 3; i++) {
-                if (a.get(i).getType().equalsIgnoreCase("Trail Runner")) tipus[0]++;
-                if (a.get(i).getType().equalsIgnoreCase("Long distance Runner,")) tipus[1]++;
-                if (a.get(i).getType().equalsIgnoreCase("Sprinter")) tipus[2]++;
-            }
-            if (tipus[0] != 1 || tipus[1] != 1 || tipus[2] != 1) return false;
+    private boolean tipusCorrectes(ArrayList<Atletes> a){
+        int[] tipus = new int[3];
+
+        for (Atletes value : a) {
+            if (value.getType().equalsIgnoreCase("Trail Runner")) tipus[0]++;
+            if (value.getType().equalsIgnoreCase("Long distance Runner,")) tipus[1]++;
+            if (value.getType().equalsIgnoreCase("Sprinter")) tipus[2]++;
         }
-        return true;
+        return tipus[0] == 1 && tipus[1] == 1 && tipus[2] == 1;
     }
 
 
@@ -75,7 +70,7 @@ public class CursesRelleus implements Runnable {
 
 
         this.teams = new ArrayList<>();
-        init(this.atletes);
+        this.binario = new boolean[this.atletes.size()];
         generateAllBinary(this.atletes.size(), 0);
         //calculateBin(0);
 
@@ -117,30 +112,20 @@ public class CursesRelleus implements Runnable {
 
     }
     */
-/*
-    public ArrayList<Atletes> backtracking(){
-
-    }
-*/
-    public void init(ArrayList<Atletes> a) {
-        this.binario = new boolean[a.size()];
-    }
 
     private boolean esFactible(int n) {
         int count=0;
-
+        if(n > this.binario.length) return false;
         for(int i=0; i < n; i++){
             if(this.binario[i]) count++;
         }
-        // TODO: mirar tipusCorrectes()
-
-        return count == 3;
+        return count <= 3;
     }
 
-    public ArrayList<Atletes> getBinaryAtletes(){
+    public ArrayList<Atletes> getBinaryAtletes(int n){
         ArrayList<Atletes> team = new ArrayList<>();
 
-        for(int i=0; i < this.binario.length; i++){
+        for(int i=0; i < n; i++){
             if(this.binario[i]){
                 team.add(atletes.get(i));
             }
@@ -149,16 +134,14 @@ public class CursesRelleus implements Runnable {
     }
 
     public void generateAllBinary(int n, int i) {
-        if (!esFactible(i)) return;
+        if (!esFactible(i) || !tipusCorrectes(getBinaryAtletes(i))) return;
         else if (i == n) {
-            if(tipusCorrectes(getBinaryAtletes())) teams.add(getBinaryAtletes());
+            teams.add(getBinaryAtletes(i));
             return;
         }
 
-
         this.binario[i] = false;
         this.generateAllBinary(n, i + 1);
-
 
         this.binario[i] = true;
         this.generateAllBinary(n, i + 1);
