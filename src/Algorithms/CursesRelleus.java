@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class CursesRelleus implements Runnable {
     private boolean[] binario;
-    private boolean[] binarioTeams;
+    private ArrayList<ArrayList<Atletes>> bestTeams;
 
     private final ArrayList<Atletes> atletes;
     private final ArrayList<Atletes> sprinter;
@@ -33,77 +33,60 @@ public class CursesRelleus implements Runnable {
         this.numEquips = Math.min(this.sprinter.size(), Math.min(this.trailRunner.size(), this.longDistance.size()));
     }
 
-    public int getNumTeams(){
-        int mesPetit;
-        mesPetit = sprinter.size();
-        if(mesPetit > longDistance.size()) mesPetit=longDistance.size();
-        if(mesPetit > trailRunner.size()) mesPetit = trailRunner.size();
-        return mesPetit;
-    }
-
-    float mitjana(Atletes[] a){
-        float result = 0;
-        for(int i=0; i < 3; i++){
-            result += a[0].getVelocitatMitjana();
-        }
-        return (result/3);
-    }
-
-    private int getOnesTeams(int n) {
-        int count=0;
-        for(int i=0; i < n; i++){
-            if(this.binarioTeams[i]) count++;
-        }
-        return count;
-    }
-
-    public ArrayList<ArrayList<Atletes>> getBinaryTeams(ArrayList<ArrayList<Atletes>> teams){
+    public ArrayList<ArrayList<Atletes>> getBinaryTeams(ArrayList<ArrayList<Atletes>> teams, int index){
         ArrayList<ArrayList<Atletes>> teamsCombination = new ArrayList<>();
 
-        for(int i=0; i < teams.size(); i++){
-            if(this.binario[i])  teamsCombination.add(teams.get(i));
+        for(int i=0; i < index; i++){
+            if(this.binario[i]) teamsCombination.add(teams.get(i));
         }
         return teamsCombination;
     }
 
     private float getDiferenciaMitjana(ArrayList<ArrayList<Atletes>> teams){
-        //TODO: Quin valor poso per inicialitzar la variable hi ha alguna manera de obtindre el mes petit sense recorrer tot l'array o poso -999999/999999 i ale?
-        float mitjanaPetitEquip, mitjanaGranEquip, aux;
+        float mitjanaPetitEquip = Float.MAX_VALUE, mitjanaGranEquip = Float.MIN_VALUE, aux;
 
-
-        for (int i=0; i < teams.size(); i++){
-            aux = 0;
-            for(Atletes at : teams.get(i)){
-                aux += at.getVelocitatMitjana();
-            }
-            aux/=3;
-            if(mitjanaPetitEquip > aux) mitjanaPetitEquip = aux;
-            if(mitjanaGranEquip < aux) mitjanaGranEquip = aux;
+        for (ArrayList<Atletes> team : teams) {
+            aux = Atletes.getVelocitatMitjanaEquip(team);
+            if (mitjanaPetitEquip > aux) mitjanaPetitEquip = aux;
+            if (mitjanaGranEquip < aux) mitjanaGranEquip = aux;
         }
+
         return mitjanaGranEquip-mitjanaPetitEquip;
     }
 
-    private void calculateBestCombination(ArrayList<ArrayList<Atletes>> teams, int n, int i){
-        int ones = getOnesTeams(i);
-        if (ones > getNumTeams()) return;
-        else if (ones == getNumTeams()) {
-            if (i == n) {
-                //agregariem la combinacio per posteriorment fer el calcul de la mitjana
-                getDiferenciaMitjana(getBinaryTeams(teams));
-                System.out.println("Hola");
+    private static boolean samePerson(ArrayList<ArrayList<Atletes>> teams) {
+        ArrayList<Atletes> used = new ArrayList<>();
+        for (ArrayList<Atletes> team : teams) {
+            for (Atletes at : team) {
+                if (!used.contains(at)) used.add(at);
+                else return true;
+            }
+        }
+        return false;
+    }
+
+    private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, int i){
+        int ones = getOnes(this.binario, i);
+        if (ones > this.numEquips) return;
+        else {
+            ArrayList<ArrayList<Atletes>> t = this.getBinaryTeams(teams, i);
+            if (CursesRelleus.samePerson(t)) return; // si una persona s'utilitza dos cops, no té sentit seguir
+
+            if (ones == this.numEquips) {
+                if (this.bestTeams.size() == 0 || getDiferenciaMitjana(t) < getDiferenciaMitjana(this.bestTeams)) this.bestTeams = t;
                 return;
             }
         }
+
         //si hi ha menys de numEquips segueix
-        if (i == n) return;
-        binarioTeams[i] = false;
-        calculateBestCombination(teams, n, i + 1);
+        if (i == teams.size()) return;
+        this.binario[i] = false;
+        calculateBestCombination(teams, i + 1);
 
-
-        binarioTeams[i] = true;
-        calculateBestCombination(teams, n, i + 1);
-
+        this.binario[i] = true;
+        calculateBestCombination(teams, i + 1);
     }
+
     private boolean tipusCorrectes(ArrayList<Atletes> a) {
         int[] tipus = new int[3];
 
@@ -112,23 +95,27 @@ public class CursesRelleus implements Runnable {
             if (value.getType().equalsIgnoreCase("Long distance Runner,")) tipus[1]++;
             if (value.getType().equalsIgnoreCase("Sprinter")) tipus[2]++;
         }
-        return tipus[0] == 1 && tipus[1] == 1 && tipus[2] == 1;
+        return tipus[0] <= 1 && tipus[1] <= 1 && tipus[2] <= 1;
     }
 
     public void run() {
         ArrayList<ArrayList<Atletes>> teams = new ArrayList<>();
         this.binario = new boolean[this.atletes.size()];
-        generateAllBinary(teams, this.atletes.size(), 0);
-        this.binarioTeams = new boolean[getNumTeams()];
-        calculateBestCombination(teams, teams.size(), 0);
+        this.generateAllBinary(teams, this.atletes.size(), 0);
+        this.binario = new boolean[teams.size()];
+        this.bestTeams = new ArrayList<>();
+        this.calculateBestCombination(teams, 0);
+    }
 
+    public ArrayList<ArrayList<Atletes>> getBestTeams() {
+        return this.bestTeams;
     }
 
 
-    private int getOnes(int n) {
+    private int getOnes(boolean []array, int n) {
         int count=0;
         for(int i=0; i < n; i++){
-            if(this.binario[i]) count++;
+            if(array[i]) count++;
         }
         return count;
     }
@@ -137,17 +124,18 @@ public class CursesRelleus implements Runnable {
         ArrayList<Atletes> team = new ArrayList<>();
 
         for(int i=0; i < n; i++){
-            if(this.binario[i])  team.add(atletes.get(i));
+            if(this.binario[i])  team.add(this.atletes.get(i));
         }
         return team;
     }
 
     public void generateAllBinary(final ArrayList<ArrayList<Atletes>> teams, int n, int i) {
-        int ones = getOnes(i);
+        int ones = getOnes(this.binario, i);
         // si hi han més de 3 uns està malament (poda)
-        if (ones > 3) return;
+        if (ones > 3 || !tipusCorrectes(getBinaryAtletes(i))) return;
+        // si hi ha 3 uns, i tipusCorrectes dona true, hi ha 1 corredor de cada tipus
         else if (ones == 3) {
-            if (tipusCorrectes(getBinaryAtletes(i))) teams.add(getBinaryAtletes(i));
+            teams.add(getBinaryAtletes(i));
             return;
         }
 
