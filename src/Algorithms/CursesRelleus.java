@@ -8,12 +8,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CursesRelleus implements Runnable {
-    private ArrayList<Atletes> atletes;
     private boolean[] binario;
-    private ArrayList<ArrayList<Atletes>> teams;
+
+    private final ArrayList<Atletes> atletes;
+    private final ArrayList<Atletes> sprinter;
+    private final ArrayList<Atletes> longDistance;
+    private final ArrayList<Atletes> trailRunner;
+    private final int numEquips;
 
     public CursesRelleus(ArrayList<Atletes> atletes){
         this.atletes = atletes;
+
+        this.sprinter = new ArrayList<>();
+        this.longDistance = new ArrayList<>();
+        this.trailRunner = new ArrayList<>();
+
+        for (Atletes at : this.atletes) {
+            if (at.getType().equalsIgnoreCase("Trail Runner")) this.trailRunner.add(at);
+            else if (at.getType().equalsIgnoreCase("Long distance Runner,")) this.longDistance.add(at);
+            else if (at.getType().equalsIgnoreCase("Sprinter")) this.sprinter.add(at);
+        }
+
+        this.numEquips = Math.min(this.sprinter.size(), Math.min(this.trailRunner.size(), this.longDistance.size()));
     }
 /*
     public int countNumEquips(){
@@ -33,7 +49,7 @@ public class CursesRelleus implements Runnable {
         return (result/3);
     }
  */
-    private boolean tipusCorrectes(ArrayList<Atletes> a){
+    private boolean tipusCorrectes(ArrayList<Atletes> a) {
         int[] tipus = new int[3];
 
         for (Atletes value : a) {
@@ -44,36 +60,11 @@ public class CursesRelleus implements Runnable {
         return tipus[0] == 1 && tipus[1] == 1 && tipus[2] == 1;
     }
 
-
-
     public void run() {
-        /*
-        ArrayList<Atletes> Sprinter = new ArrayList<>();
-        ArrayList<Atletes> LD = new ArrayList<>();
-        ArrayList<Atletes> TR = new ArrayList<>();
-
-        for (int i = 0; i < this.clubs.length; i++) {
-            for (int j = 0; j < this.clubs[i].getAtletes().length; j++) {
-                if (clubs[i].getAtletes()[j].getType().equalsIgnoreCase("Trail Runner"))
-                    TR.add(clubs[i].getAtletes()[j]);
-                if (clubs[i].getAtletes()[j].getType().equalsIgnoreCase("Long distance Runner,"))
-                    LD.add(clubs[i].getAtletes()[j]);
-                if (clubs[i].getAtletes()[j].getType().equalsIgnoreCase("Sprinter"))
-                    Sprinter.add(clubs[i].getAtletes()[j]);
-            }
-        }
-         */
-
-
-
-
-
-
-        this.teams = new ArrayList<>();
+        ArrayList<ArrayList<Atletes>> teams = new ArrayList<>();
         this.binario = new boolean[this.atletes.size()];
-        generateAllBinary(this.atletes.size(), 0);
-        //calculateBin(0);
-
+        generateAllBinary(teams, this.atletes.size(), 0);
+        System.out.println();
 
 
         //Atletes[][] configuracions = new Atletes[countNumEquips()][3];
@@ -113,38 +104,39 @@ public class CursesRelleus implements Runnable {
     }
     */
 
-    private boolean esFactible(int n) {
+    private int getOnes(int n) {
         int count=0;
-        if(n > this.binario.length) return false;
         for(int i=0; i < n; i++){
             if(this.binario[i]) count++;
         }
-        return count <= 3;
+        return count;
     }
 
     public ArrayList<Atletes> getBinaryAtletes(int n){
         ArrayList<Atletes> team = new ArrayList<>();
 
         for(int i=0; i < n; i++){
-            if(this.binario[i]){
-                team.add(atletes.get(i));
-            }
+            if(this.binario[i])  team.add(atletes.get(i));
         }
         return team;
     }
 
-    public void generateAllBinary(int n, int i) {
-        if (!esFactible(i) || !tipusCorrectes(getBinaryAtletes(i))) return;
-        else if (i == n) {
-            teams.add(getBinaryAtletes(i));
+    public void generateAllBinary(final ArrayList<ArrayList<Atletes>> teams, int n, int i) {
+        int ones = getOnes(i);
+        // si hi han més de 3 uns està malament (poda)
+        if (ones > 3) return;
+        else if (ones == 3) {
+            if (tipusCorrectes(getBinaryAtletes(i))) teams.add(getBinaryAtletes(i));
             return;
         }
 
+        // si hi ha menys de 3 uns, segueix
+        if (i == n) return;
         this.binario[i] = false;
-        this.generateAllBinary(n, i + 1);
+        this.generateAllBinary(teams, n, i + 1);
 
         this.binario[i] = true;
-        this.generateAllBinary(n, i + 1);
+        this.generateAllBinary(teams, n, i + 1);
     }
 
 
