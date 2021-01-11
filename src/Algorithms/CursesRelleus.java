@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class CursesRelleus implements Runnable {
     private ArrayList<Atletes> atletes;
-    private int[] binario;
+    private boolean[] binario;
     private ArrayList<ArrayList<Atletes>> teams;
 
     public CursesRelleus(ArrayList<Atletes> atletes){
@@ -123,24 +123,25 @@ public class CursesRelleus implements Runnable {
     }
 */
     public void init(ArrayList<Atletes> a) {
-        this.binario = new int[a.size()];
+        this.binario = new boolean[a.size()];
     }
 
-    public boolean esFactible(){
+    private boolean esFactible(int n) {
         int count=0;
 
-        for(int i=0; i < this.binario.length; i++){
-            if(this.binario[i] == 1) count++;
+        for(int i=0; i < n; i++){
+            if(this.binario[i]) count++;
         }
-        if(count == 3) return true;
-        return false;
+        // TODO: mirar tipusCorrectes()
+
+        return count == 3;
     }
 
     public ArrayList<Atletes> getBinaryAtletes(){
         ArrayList<Atletes> team = new ArrayList<>();
 
-        for(int i=0; i < binario.length; i++){
-            if(binario[i] == 1){
+        for(int i=0; i < this.binario.length; i++){
+            if(this.binario[i]){
                 team.add(atletes.get(i));
             }
         }
@@ -148,23 +149,19 @@ public class CursesRelleus implements Runnable {
     }
 
     public void generateAllBinary(int n, int i) {
-        if (i == n) {
-            if(esFactible()){
-                if(tipusCorrectes(getBinaryAtletes())){
-                    teams.add(getBinaryAtletes());
-                    System.out.println(getBinaryAtletes().toString());
-                }
-            }
+        if (!esFactible(i)) return;
+        else if (i == n) {
+            if(tipusCorrectes(getBinaryAtletes())) teams.add(getBinaryAtletes());
             return;
         }
 
 
-        binario[i] = 0;
-        generateAllBinary(n, i + 1);
+        this.binario[i] = false;
+        this.generateAllBinary(n, i + 1);
 
 
-        binario[i] = 1;
-        generateAllBinary(n, i + 1);
+        this.binario[i] = true;
+        this.generateAllBinary(n, i + 1);
     }
 
 
