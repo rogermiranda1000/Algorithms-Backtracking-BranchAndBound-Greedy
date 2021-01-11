@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String []args) {
         try {
-            Club []clubs = FileController.loadFile("files/clubs/datasetXS.json", Club[].class);
+            Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
             Race []races = FileController.loadFile("files/races/datasetXS.json", Race[].class);
 
             Horaris h = new Horaris(races);
