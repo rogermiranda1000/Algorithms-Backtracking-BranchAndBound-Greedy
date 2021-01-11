@@ -24,7 +24,7 @@ public class Main {
 
             CursesRelleus cR = new CursesRelleus(Club.getAllAtletes(clubs));
             cR.run();
-
+            System.out.println(cR.getBestTeams().toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
