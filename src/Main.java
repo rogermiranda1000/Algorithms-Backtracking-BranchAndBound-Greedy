@@ -11,17 +11,14 @@ public class Main {
 
     public static void main(String []args) {
         try {
-            Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
-            Race []races = FileController.loadFile("files/races/datasetXS.json", Race[].class);
-
+            /*Race []races = FileController.loadFile("files/races/datasetXS.json", Race[].class);
             Horaris h = new Horaris(races);
             h.run();
             races = h.getSorted();
             System.out.println("Es poden organitzar " + races.length + " carreres.");
-            System.out.println(Arrays.toString(races));
+            System.out.println(Arrays.toString(races));*/
 
-
-
+            Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
             CursesRelleus cR = new CursesRelleus(Club.getAllAtletes(clubs));
             cR.run();
             System.out.println(cR.getBestTeams().toString());
@@ -29,9 +26,9 @@ public class Main {
             e.printStackTrace();
         }
 
-        //Curses c = new Curses(10, 5000);
-        //c.run();
-        //System.out.println("[*] " + c.getBest());
+        /*Curses c = new Curses(10, 5000);
+        c.run();
+        System.out.println("[*] " + c.getBest());*/
 
 
 
