@@ -41,12 +41,12 @@ public class Atletes {
         if (o == null) return false;
         if (!(o instanceof Atletes)) return false;
         Atletes a = (Atletes) o;
-        return a.name.equalsIgnoreCase(this.name)
+        return  a.name.equalsIgnoreCase(this.name)
                 && a.lastname.equalsIgnoreCase(this.lastname)
                 && a.age == this.age
                 && a.nation.equalsIgnoreCase(this.nation)
                 && a.distance == this.distance
-                && a.time == this.distance
+                && a.time == this.time
                 && a.type.equalsIgnoreCase(this.type);
     }
 }
