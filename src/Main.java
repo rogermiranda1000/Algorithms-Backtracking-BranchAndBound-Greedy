@@ -1,6 +1,7 @@
 import Algorithms.Curses;
 import Algorithms.Horaris;
 import Algorithms.CursesRelleus;
+import Dades.Atletes;
 import Dades.Club;
 import Dades.Race;
 
@@ -19,9 +20,11 @@ public class Main {
             System.out.println(Arrays.toString(races));*/
 
             Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
-            CursesRelleus cR = new CursesRelleus(Club.getAllAtletes(clubs));
+            Atletes a = Club.getAllAtletes(clubs).get(0);
+            System.out.println(a.equals(a));
+            /*CursesRelleus cR = new CursesRelleus(Club.getAllAtletes(clubs));
             cR.run();
-            System.out.println("[*] " + cR.getBestTeams().toString());
+            System.out.println("[*] " + cR.getBestTeams().toString());*/
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

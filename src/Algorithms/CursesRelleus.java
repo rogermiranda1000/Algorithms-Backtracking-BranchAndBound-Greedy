@@ -18,6 +18,11 @@ public class CursesRelleus implements Runnable {
     private final ArrayList<Atletes> trailRunner;
     private final int numEquips;
 
+    /**
+     * El número de threads serà 2^THREAD_LEVEL
+     */
+    private final int THREAD_LEVEL = 8;
+
     public CursesRelleus(ArrayList<Atletes> atletes){
         this.atletes = atletes;
 
@@ -70,7 +75,7 @@ public class CursesRelleus implements Runnable {
         this.diferencia = CursesRelleus.getDiferenciaMitjana(t);
     }
 
-    private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, ArrayList<ArrayList<Atletes>> current, ArrayList<Atletes> currentAtletes, int i){
+    private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, ArrayList<ArrayList<Atletes>> current, ArrayList<Atletes> currentAtletes, int i) {
         int ones = current.size();
         if (ones > this.numEquips) return;
         else if (ones == this.numEquips) {
@@ -83,16 +88,44 @@ public class CursesRelleus implements Runnable {
 
         //si hi ha menys de numEquips segueix
         if (i == teams.size()) return;
-        // no s'agafa
-        calculateBestCombination(teams, new ArrayList<>(current), new ArrayList<>(currentAtletes), i + 1);
+        if (i < this.THREAD_LEVEL) {
+            Runnable noAgafa =  () -> calculateBestCombination(teams, new ArrayList<>(current), new ArrayList<>(currentAtletes), i + 1);
 
-        // s'agafa
-        ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
-        copy.add(teams.get(i));
-        if (CursesRelleus.samePerson(currentAtletes, teams.get(i))) return; // si una persona s'utilitza dos cops, no té sentit seguir
-        ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
-        copy2.addAll(teams.get(i));
-        calculateBestCombination(teams, copy, copy2, i + 1);
+            ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
+            copy.add(teams.get(i));
+            if (CursesRelleus.samePerson(currentAtletes, teams.get(i)))
+                return; // si una persona s'utilitza dos cops, no té sentit seguir
+            ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
+            copy2.addAll(teams.get(i));
+            Runnable agafa =  () -> calculateBestCombination(teams, copy, copy2, i + 1);
+
+            // inicia threads
+            Thread t1 = new Thread(noAgafa);
+            t1.start();
+            Thread t2 = new Thread(agafa);
+            t2.start();
+
+            // wait till t1 & t2
+            try {
+                t1.join();
+                t2.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            // no s'agafa
+            calculateBestCombination(teams, new ArrayList<>(current), new ArrayList<>(currentAtletes), i + 1);
+
+            // s'agafa
+            ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
+            copy.add(teams.get(i));
+            if (CursesRelleus.samePerson(currentAtletes, teams.get(i)))
+                return; // si una persona s'utilitza dos cops, no té sentit seguir
+            ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
+            copy2.addAll(teams.get(i));
+            calculateBestCombination(teams, copy, copy2, i + 1);
+        }
     }
 
     private boolean tipusCorrectes(ArrayList<Atletes> a) {
