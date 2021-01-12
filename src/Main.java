@@ -21,7 +21,7 @@ public class Main {
             Club []clubs = FileController.loadFile("files/clubs/datasetS.json", Club[].class);
             CursesRelleus cR = new CursesRelleus(Club.getAllAtletes(clubs));
             cR.run();
-            System.out.println(cR.getBestTeams().toString());
+            System.out.println("[*] " + cR.getBestTeams().toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class CursesRelleus implements Runnable {
     private boolean[] binario;
     private ArrayList<ArrayList<Atletes>> bestTeams;
+    private float diferencia;
 
     private final ArrayList<Atletes> atletes;
     private final ArrayList<Atletes> sprinter;
@@ -54,37 +55,44 @@ public class CursesRelleus implements Runnable {
         return mitjanaGranEquip-mitjanaPetitEquip;
     }
 
-    private static boolean samePerson(ArrayList<ArrayList<Atletes>> teams) {
-        ArrayList<Atletes> used = new ArrayList<>();
-        for (ArrayList<Atletes> team : teams) {
-            for (Atletes at : team) {
-                if (!used.contains(at)) used.add(at);
-                else return true;
+    private static boolean samePerson(ArrayList<Atletes> last, ArrayList<Atletes> next) {
+        for (Atletes at : next) {
+            for (Atletes a : last) {
+                if (at.equals(a)) return true;
             }
         }
+
         return false;
     }
 
-    private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, int i){
-        int ones = getOnes(this.binario, i);
-        if (ones > this.numEquips) return;
-        else {
-            ArrayList<ArrayList<Atletes>> t = this.getBinaryTeams(teams, i);
-            if (CursesRelleus.samePerson(t)) return; // si una persona s'utilitza dos cops, no té sentit seguir
+    private void setBestTeams(ArrayList<ArrayList<Atletes>> t) {
+        this.bestTeams = t;
+        this.diferencia = CursesRelleus.getDiferenciaMitjana(t);
+    }
 
-            if (ones == this.numEquips) {
-                if (this.bestTeams.size() == 0 || CursesRelleus.getDiferenciaMitjana(t) < CursesRelleus.getDiferenciaMitjana(this.bestTeams)) this.bestTeams = t;
-                return;
+    private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, ArrayList<ArrayList<Atletes>> current, ArrayList<Atletes> currentAtletes, int i){
+        int ones = current.size();
+        if (ones > this.numEquips) return;
+        else if (ones == this.numEquips) {
+            if (this.bestTeams.size() == 0 || CursesRelleus.getDiferenciaMitjana(current) < this.diferencia) {
+                this.setBestTeams(current);
+                System.out.println(this.diferencia + " - " + current.toString());
             }
+            return;
         }
 
         //si hi ha menys de numEquips segueix
         if (i == teams.size()) return;
-        this.binario[i] = false;
-        calculateBestCombination(teams, i + 1);
+        // no s'agafa
+        calculateBestCombination(teams, new ArrayList<>(current), new ArrayList<>(currentAtletes), i + 1);
 
-        this.binario[i] = true;
-        calculateBestCombination(teams, i + 1);
+        // s'agafa
+        ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
+        copy.add(teams.get(i));
+        if (CursesRelleus.samePerson(currentAtletes, teams.get(i))) return; // si una persona s'utilitza dos cops, no té sentit seguir
+        ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
+        copy2.addAll(teams.get(i));
+        calculateBestCombination(teams, copy, copy2, i + 1);
     }
 
     private boolean tipusCorrectes(ArrayList<Atletes> a) {
@@ -98,13 +106,14 @@ public class CursesRelleus implements Runnable {
         return tipus[0] <= 1 && tipus[1] <= 1 && tipus[2] <= 1;
     }
 
+    @Override
     public void run() {
         ArrayList<ArrayList<Atletes>> teams = new ArrayList<>();
         this.binario = new boolean[this.atletes.size()];
         this.generateAllBinary(teams, this.atletes.size(), 0);
-        this.binario = new boolean[teams.size()];
+        this.binario = null;
         this.bestTeams = new ArrayList<>();
-        this.calculateBestCombination(teams, 0);
+        this.calculateBestCombination(teams, new ArrayList<>(), new ArrayList<>(), 0);
     }
 
     public ArrayList<ArrayList<Atletes>> getBestTeams() {
