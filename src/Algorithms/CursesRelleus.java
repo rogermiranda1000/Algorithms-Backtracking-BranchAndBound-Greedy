@@ -42,7 +42,7 @@ public class CursesRelleus implements Runnable {
         return teamsCombination;
     }
 
-    private float getDiferenciaMitjana(ArrayList<ArrayList<Atletes>> teams){
+    private static float getDiferenciaMitjana(ArrayList<ArrayList<Atletes>> teams){
         float mitjanaPetitEquip = Float.MAX_VALUE, mitjanaGranEquip = Float.MIN_VALUE, aux;
 
         for (ArrayList<Atletes> team : teams) {
@@ -73,7 +73,7 @@ public class CursesRelleus implements Runnable {
             if (CursesRelleus.samePerson(t)) return; // si una persona s'utilitza dos cops, no té sentit seguir
 
             if (ones == this.numEquips) {
-                if (this.bestTeams.size() == 0 || getDiferenciaMitjana(t) < getDiferenciaMitjana(this.bestTeams)) this.bestTeams = t;
+                if (this.bestTeams.size() == 0 || CursesRelleus.getDiferenciaMitjana(t) < CursesRelleus.getDiferenciaMitjana(this.bestTeams)) this.bestTeams = t;
                 return;
             }
         }
