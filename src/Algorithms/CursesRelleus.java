@@ -77,7 +77,7 @@ public class CursesRelleus implements Runnable {
         else if (ones == this.numEquips) {
             if (this.bestTeams.size() == 0 || CursesRelleus.getDiferenciaMitjana(current) < this.diferencia) {
                 this.setBestTeams(current);
-                System.out.println(this.diferencia + " - " + current.toString());
+                //System.out.println(this.diferencia + " - " + current.toString());
             }
             return;
         }
@@ -148,6 +148,10 @@ public class CursesRelleus implements Runnable {
 
     public ArrayList<ArrayList<Atletes>> getBestTeams() {
         return this.bestTeams;
+    }
+
+    public float getDiferencia() {
+        return this.diferencia;
     }
 
 
