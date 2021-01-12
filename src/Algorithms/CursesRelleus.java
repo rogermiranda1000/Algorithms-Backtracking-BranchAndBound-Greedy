@@ -1,11 +1,8 @@
 package Algorithms;
 
 import Dades.Atletes;
-import Dades.Club;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CursesRelleus implements Runnable {
     private boolean[] binario;
@@ -18,10 +15,7 @@ public class CursesRelleus implements Runnable {
     private final ArrayList<Atletes> trailRunner;
     private final int numEquips;
 
-    /**
-     * El número de threads serà 2^THREAD_LEVEL
-     */
-    private final int THREAD_LEVEL = 8;
+    private int THREAD_LEVEL;
 
     public CursesRelleus(ArrayList<Atletes> atletes){
         this.atletes = atletes;
@@ -76,6 +70,8 @@ public class CursesRelleus implements Runnable {
     }
 
     private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, ArrayList<ArrayList<Atletes>> current, ArrayList<Atletes> currentAtletes, int i) {
+        if (this.bestTeams.size() > 0 && this.diferencia == 0) return; // millor solució trobada
+
         int ones = current.size();
         if (ones > this.numEquips) return;
         else if (ones == this.numEquips) {
@@ -93,8 +89,7 @@ public class CursesRelleus implements Runnable {
 
             ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
             copy.add(teams.get(i));
-            if (CursesRelleus.samePerson(currentAtletes, teams.get(i)))
-                return; // si una persona s'utilitza dos cops, no té sentit seguir
+            if (CursesRelleus.samePerson(currentAtletes, teams.get(i))) return; // si una persona s'utilitza dos cops, no té sentit seguir
             ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
             copy2.addAll(teams.get(i));
             Runnable agafa =  () -> calculateBestCombination(teams, copy, copy2, i + 1);
@@ -145,6 +140,8 @@ public class CursesRelleus implements Runnable {
         this.binario = new boolean[this.atletes.size()];
         this.generateAllBinary(teams, this.atletes.size(), 0);
         this.binario = null;
+        this.THREAD_LEVEL = teams.size() / 100;
+        System.out.println("Using " + this.THREAD_LEVEL + " threads...");
         this.bestTeams = new ArrayList<>();
         this.calculateBestCombination(teams, new ArrayList<>(), new ArrayList<>(), 0);
     }
