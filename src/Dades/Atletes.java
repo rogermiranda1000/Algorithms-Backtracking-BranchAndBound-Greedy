@@ -25,7 +25,7 @@ public class Atletes {
     /* OVERRIDED FUNCTIONS */
     @Override
     public String toString() {
-        return "Dades.Atletes{" +
+        /*return "Dades.Atletes{" +
                 "name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", age=" + age +
@@ -33,7 +33,8 @@ public class Atletes {
                 ", distance=" + distance +
                 ", time=" + time +
                 ", type='" + type + '\'' +
-                '}';
+                '}';*/
+        return  this.name + " [" + this.getVelocitatMitjana() + "]";
     }
 
     @Override
