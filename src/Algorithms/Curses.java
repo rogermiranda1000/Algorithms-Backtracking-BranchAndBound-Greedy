@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
+/**
+ * B&B
+ */
 public class Curses implements Runnable {
     private class Comb implements Comparable<Comb> {
         private final int[] config;
