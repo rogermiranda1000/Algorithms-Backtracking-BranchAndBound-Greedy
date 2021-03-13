@@ -4,6 +4,9 @@ import Dades.Race;
 
 import java.util.*;
 
+/**
+ * Greedy
+ */
 public class Horaris implements Runnable {
     private final Race[] list;
     private Race[] sorted;
