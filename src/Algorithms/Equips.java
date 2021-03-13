@@ -4,7 +4,10 @@ import Dades.Atletes;
 
 import java.util.ArrayList;
 
-public class CursesRelleus implements Runnable {
+/**
+ * Backtracking
+ */
+public class Equips implements Runnable {
     private boolean[] binario;
     private ArrayList<ArrayList<Atletes>> bestTeams;
     private float diferencia;
@@ -17,7 +20,7 @@ public class CursesRelleus implements Runnable {
 
     private int THREAD_LEVEL;
 
-    public CursesRelleus(ArrayList<Atletes> atletes){
+    public Equips(ArrayList<Atletes> atletes){
         this.atletes = atletes;
 
         this.sprinter = new ArrayList<>();
@@ -66,7 +69,7 @@ public class CursesRelleus implements Runnable {
 
     private void setBestTeams(ArrayList<ArrayList<Atletes>> t) {
         this.bestTeams = t;
-        this.diferencia = CursesRelleus.getDiferenciaMitjana(t);
+        this.diferencia = Equips.getDiferenciaMitjana(t);
     }
 
     private void calculateBestCombination(final ArrayList<ArrayList<Atletes>> teams, ArrayList<ArrayList<Atletes>> current, ArrayList<Atletes> currentAtletes, int i) {
@@ -75,7 +78,7 @@ public class CursesRelleus implements Runnable {
         int ones = current.size();
         if (ones > this.numEquips) return;
         else if (ones == this.numEquips) {
-            if (this.bestTeams.size() == 0 || CursesRelleus.getDiferenciaMitjana(current) < this.diferencia) {
+            if (this.bestTeams.size() == 0 || Equips.getDiferenciaMitjana(current) < this.diferencia) {
                 this.setBestTeams(current);
                 //System.out.println(this.diferencia + " - " + current.toString());
             }
@@ -89,7 +92,7 @@ public class CursesRelleus implements Runnable {
 
             ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
             copy.add(teams.get(i));
-            if (CursesRelleus.samePerson(currentAtletes, teams.get(i))) return; // si una persona s'utilitza dos cops, no té sentit seguir
+            if (Equips.samePerson(currentAtletes, teams.get(i))) return; // si una persona s'utilitza dos cops, no té sentit seguir
             ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
             copy2.addAll(teams.get(i));
             Runnable agafa =  () -> calculateBestCombination(teams, copy, copy2, i + 1);
@@ -115,7 +118,7 @@ public class CursesRelleus implements Runnable {
             // s'agafa
             ArrayList<ArrayList<Atletes>> copy = new ArrayList<>(current);
             copy.add(teams.get(i));
-            if (CursesRelleus.samePerson(currentAtletes, teams.get(i)))
+            if (Equips.samePerson(currentAtletes, teams.get(i)))
                 return; // si una persona s'utilitza dos cops, no té sentit seguir
             ArrayList<Atletes> copy2 = new ArrayList<>(currentAtletes);
             copy2.addAll(teams.get(i));
